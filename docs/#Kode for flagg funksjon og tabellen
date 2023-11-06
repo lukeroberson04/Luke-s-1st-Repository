@@ -1,0 +1,57 @@
+#Kode for flagg funksjon og tabellen
+fun three-color-flag(inner :: String, outer :: String, background :: String):
+doc: "bilde for 1 av 5 skandinaviske flagg. Inner er horisontal rektangelet, Outer er vertikal rektangelet og Background er baset for flagget."
+  overlay-xy(rectangle(20, 150, "solid", inner),-60, 0,
+    overlay-xy(rectangle(200, 20, "solid", inner),0, -63,
+      overlay-xy(rectangle(40, 150, "solid", outer),-50, 0,
+        overlay-xy(rectangle(200, 40, "solid", outer),0, -53,
+          rectangle(200, 150, "solid", background)))))
+end
+norway = three-color-flag("blue", "white", "red")
+iceland = three-color-flag("red", "white", "blue")
+faroe = three-color-flag("red", "blue", "white")
+denmark = three-color-flag("white", "white", "red")
+finnland = three-color-flag("blue", "blue", "white")
+sweden= three-color-flag("yellow", "yellow", "blue")norway
+iceland
+faroe
+denmark
+finnland
+sweden
+
+
+
+#kode for tabellen
+include shared-gdrive(
+"dcic-2021",
+"1wyQZj_L0qqV9Ekgr9au6RX2iqt2Ga8Ep")
+include gdrive-sheets
+include data-source
+ssid = "1RYN0i4Zx_UETVuYacgaGfnFcv4l9zd9toQTTdkQkj7g"
+kWh-wealthy-consumer-data =
+load-table: komponent, energi
+source: load-spreadsheet(ssid).sheet-by-name("kWh", true)
+    sanitize energi using string-sanitizer
+end
+kWh-wealthy-consumer-data
+
+fun energi-to-number(str :: String) -> Number:
+  cases(Option) string-to-number(str):
+    | some(a) => a
+    | none => 41.6
+  end
+where:
+  energi-to-number("") is 41.6
+energi-to-number("48") is 48
+end
+
+trans = transform-column(kWh-wealthy-consumer-data, "energi", energi-to-number)
+
+fun bil-energi(distance-per-day, distance-unit-fuel):
+  (distance-per-day / distance-unit-fuel) * 10
+end
+
+bil-energi(50, 12)
+trans
+sum(trans, "energi")
+bar-chart(trans, "komponent", "energi")

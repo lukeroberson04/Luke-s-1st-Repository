@@ -1,0 +1,8 @@
+#Pyret kode
+
+overlay-xy(circle(5, "solid", "black"), -70, -20,
+  overlay-xy(circle(5, "solid", "black"), -20, -20,
+    overlay-xy(circle(20, "solid", "white"), -55, -10,
+  overlay-xy(circle(20, "solid", "white"), -10, -10,
+    overlay-xy(rectangle(80, 20, "solid", "white"), -10, -70,
+          rectangle(100, 100, "solid", "yellow"))))))
